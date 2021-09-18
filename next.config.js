@@ -1,5 +1,5 @@
 module.exports = {
     images: {
-      domains: ['https://media.valorant-api.com'],
+      domains: ['media.valorant-api.com'],
     },
   }
