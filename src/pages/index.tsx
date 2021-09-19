@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Head from "next/head";
 import { GetStaticProps } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-interface Agents {
+interface HomeProps {
   agents: [Agent];
 }
 interface Agent {
@@ -21,25 +21,44 @@ interface AgentAbilities {
   displayIcon?: string;
 }
 
-export default function Home({ agents }: Agents) {
+export default function Home({ agents }: HomeProps) {
   const [agent, setAgent] = useState<Agent>();
   const [agentAbilities, setAgentAbilities] = useState<AgentAbilities>();
   const [startGame, setStartGame] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState("");
+  const [check, setCheck] = useState(false);
+  const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
 
-  function handleRandomAgent(min: number, max: number) {
+  useEffect(() => {
+    localStorage.getItem("@ValorantGuess") != null &&
+      setBestScore(parseInt(localStorage.getItem("@ValorantGuess")));
+  }, []);
+
+  function handleStartClick(min: number, max: number) {
     min = Math.ceil(min);
     max = Math.floor(max);
 
     const randomAgent = agents[Math.floor(Math.random() * (max - min) + min)];
+    const abilities = randomAgent.abilities[Math.floor(Math.random() * 4)];
 
     setAgent(randomAgent);
+    setAgentAbilities(abilities);
   }
 
-  function handleAgentAbilities() {
-    const abilities = agent.abilities[Math.floor(Math.random() * 4)];
+  function CheckScore() {
+    bestScore <= score && setBestScore(score + 1);
 
-    setAgentAbilities(abilities);
+    localStorage.setItem("@ValorantGuess", JSON.stringify(bestScore + 1));
+  }
+
+  function CheckAgent() {
+    selectedAgent == agent.displayName
+      ? (setCheck(true),
+        setScore(score + 1),
+        handleStartClick(0, agents.length),
+        CheckScore())
+      : (setCheck(false), setStartGame(false), setScore(0));
   }
 
   return (
@@ -59,6 +78,12 @@ export default function Home({ agents }: Agents) {
           layout="fill"
         />
 
+        <div className="absolute top-2 right-2 flex gap-8">
+          <h1 className="text-white font-anton">BEST SCORE: {bestScore}</h1>
+
+          <h1 className="text-white font-anton">SCORE: {score}</h1>
+        </div>
+
         <section className="z-10 w-full h-full flex justify-center items-center">
           {startGame ? (
             <div className="flex flex-col justify-around items-center h-full">
@@ -68,27 +93,36 @@ export default function Home({ agents }: Agents) {
                 height={120}
               />
 
-              <div className="grid grid-rows-2 grid-flow-col gap-1">
-                {agents.map((agent: Agent) => {
-                  return (
-                    <button
-                      key={agent.uuid}
-                      className={`${
-                        selectedAgent == agent.displayName
-                          ? "bg-opacity-30 bg-gray-100 brightness-110 filter"
-                          : "filter hover:brightness-110 hover:bg-gray-100 hover:bg-opacity-30"
-                      } border border-gray-300 w-20 h-20`}
-                      onClick={() => setSelectedAgent(agent.displayName)}
-                    >
-                      <Image
-                        src={agent.displayIconSmall}
-                        alt="Agent Icon"
-                        width={80}
-                        height={80}
-                      />
-                    </button>
-                  );
-                })}
+              <div className="flex flex-col items-center justify-center gap-8">
+                <button
+                  className="bg-green-400 py-3 px-12 text-2xl font-black text-gray-200 border border-gray-200 hover:bg-green-300 transition"
+                  onClick={CheckAgent}
+                >
+                  LOCK IN
+                </button>
+
+                <div className="grid grid-rows-2 grid-flow-col gap-1">
+                  {agents.map((agent: Agent) => {
+                    return (
+                      <button
+                        key={agent.uuid}
+                        className={`${
+                          selectedAgent == agent.displayName
+                            ? "bg-opacity-30 bg-gray-100 brightness-110 filter"
+                            : "filter hover:brightness-110 hover:bg-gray-100 hover:bg-opacity-30"
+                        } border border-gray-300 w-20 h-20`}
+                        onClick={() => setSelectedAgent(agent.displayName)}
+                      >
+                        <Image
+                          src={agent.displayIconSmall}
+                          alt="Agent Icon"
+                          width={80}
+                          height={80}
+                        />
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           ) : (
@@ -99,8 +133,7 @@ export default function Home({ agents }: Agents) {
                   : "bg-green-400 p-4 px-8 text-2xl font-black text-gray-200 border border-gray-200 hover:bg-green-300 transition"
               } `}
               onClick={() => {
-                handleRandomAgent(0, agents.length),
-                handleAgentAbilities(),
+                handleStartClick(0, agents.length);
                 setStartGame(true);
               }}
             >
