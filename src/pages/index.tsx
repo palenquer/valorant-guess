@@ -2,9 +2,11 @@ import Image from "next/image";
 import Head from "next/head";
 import { GetStaticProps } from "next";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 interface HomeProps {
   agents: [Agent];
+  randomMap: Map;
 }
 interface Agent {
   uuid: string;
@@ -21,12 +23,15 @@ interface AgentAbilities {
   displayIcon?: string;
 }
 
-export default function Home({ agents }: HomeProps) {
+interface Map {
+  splash: string;
+}
+
+export default function Home({ agents, randomMap }: HomeProps) {
   const [agent, setAgent] = useState<Agent>();
   const [agentAbilities, setAgentAbilities] = useState<AgentAbilities>();
   const [startGame, setStartGame] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState("");
-  const [check, setCheck] = useState(false);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
 
@@ -54,11 +59,10 @@ export default function Home({ agents }: HomeProps) {
 
   function CheckAgent() {
     selectedAgent == agent.displayName
-      ? (setCheck(true),
-        setScore(score + 1),
-        handleStartClick(0, agents.length),
-        CheckScore())
-      : (setCheck(false), setStartGame(false), setScore(0));
+      ? (setScore(score + 1), handleStartClick(0, agents.length), CheckScore())
+      : (setStartGame(false), setScore(0));
+
+    setSelectedAgent("");
   }
 
   return (
@@ -71,46 +75,69 @@ export default function Home({ agents }: HomeProps) {
       <main className="w-full h-full flex justify-center items-center relative">
         <Image
           className="absolute w-full h-full filter z-0 blur-sm transform scale-110"
-          src={
-            "https://media.valorant-api.com/maps/7eaecc1b-4337-bbf6-6ab9-04b8f06b3319/splash.png"
-          }
+          src={randomMap.splash}
           alt="background image"
           layout="fill"
         />
 
-        <div className="absolute top-2 right-2 flex gap-8">
-          <h1 className="text-white font-anton">BEST SCORE: {bestScore}</h1>
+        <div className="absolute top-2 flex flex-col md:flex-row md:gap-8 w-full md:justify-between px-2 md:px-9">
+          <h1 className="text-white font-anton text-xl md:text-2xl">
+            BEST SCORE: {bestScore}
+          </h1>
 
-          <h1 className="text-white font-anton">SCORE: {score}</h1>
+          <h1 className="text-white font-anton text-xl md:text-2xl">
+            SCORE: {score}
+          </h1>
         </div>
 
         <section className="z-10 w-full h-full flex justify-center items-center">
           {startGame ? (
             <div className="flex flex-col justify-around items-center h-full">
-              <Image
-                src={agentAbilities.displayIcon}
-                width={120}
-                height={120}
-              />
+              <motion.div
+                key={agentAbilities.displayIcon}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ ease: "easeOut", duration: 1 }}
+              >
+                <Image
+                  src={agentAbilities.displayIcon}
+                  width={120}
+                  height={120}
+                  placeholder="blur"
+                  blurDataURL="true"
+                  priority={true}
+                />
+              </motion.div>
 
-              <div className="flex flex-col items-center justify-center gap-8">
+              <div className="flex flex-col items-center justify-center gap-4 md:gap-8">
+                {selectedAgent != "" ? (
+                  <h1 className="text-white font-bold">{selectedAgent}</h1>
+                ) : (
+                  <h1 className="text-white font-bold">Select an agent</h1>
+                )}
                 <button
-                  className="bg-green-400 py-3 px-12 text-2xl font-black text-gray-200 border border-gray-200 hover:bg-green-300 transition"
+                  className={`${
+                    selectedAgent == ""
+                      ? "cursor-not-allowed"
+                      : "bg-green-400 hover:bg-green-300 transition"
+                  }" py-3 px-12 text-2xl font-black text-gray-200 border border-gray-200"`}
                   onClick={CheckAgent}
+                  type="button"
+                  disabled={selectedAgent == ""}
                 >
                   LOCK IN
                 </button>
 
-                <div className="grid grid-rows-2 grid-flow-col gap-1">
+                <div className="grid md:grid-rows-2 grid-rows-4 grid-flow-col gap-1">
                   {agents.map((agent: Agent) => {
                     return (
                       <button
                         key={agent.uuid}
                         className={`${
                           selectedAgent == agent.displayName
-                            ? "bg-opacity-30 bg-gray-100 brightness-110 filter"
-                            : "filter hover:brightness-110 hover:bg-gray-100 hover:bg-opacity-30"
-                        } border border-gray-300 w-20 h-20`}
+                            ? "bg-opacity-30 bg-gray-100 brightness-110 filter border-2 border-yellow-200"
+                            : "filter hover:brightness-110 hover:bg-gray-100 hover:bg-opacity-30 border border-gray-300"
+                        } w-16 h-16 md:w-20 md:h-20`}
                         onClick={() => setSelectedAgent(agent.displayName)}
                       >
                         <Image
@@ -148,7 +175,9 @@ export default function Home({ agents }: HomeProps) {
 
 export const getStaticProps: GetStaticProps = async () => {
   const data = await fetch("https://valorant-api.com/v1/agents");
+  const maps = await fetch("https://valorant-api.com/v1/maps");
   const response = await data.json();
+  const mapResponse = await maps.json();
 
   const filterAgents = [
     ...response.data
@@ -160,9 +189,15 @@ export const getStaticProps: GetStaticProps = async () => {
     a.displayName.localeCompare(b.displayName)
   );
 
+  const filteredMap =
+    mapResponse.data[
+      Math.floor(Math.random() * (mapResponse.data.length - 0) + 0)
+    ];
+
   return {
     props: {
       agents: filteredAgents,
+      randomMap: filteredMap,
     },
 
     revalidate: 60 * 60 * 24, // 24 hours
