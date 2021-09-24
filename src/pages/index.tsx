@@ -78,6 +78,7 @@ export default function Home({ agents, randomMap }: HomeProps) {
           src={randomMap.splash}
           alt="background image"
           layout="fill"
+          priority={true}
         />
 
         <div className="absolute top-2 flex flex-col md:flex-row md:gap-8 w-full md:justify-between px-2 md:px-9">
