@@ -73,13 +73,19 @@ export default function Home({ agents, randomMap }: HomeProps) {
       </Head>
 
       <main className="w-full h-full flex justify-center items-center relative">
-        <Image
-          className="absolute w-full h-full filter z-0 blur-sm transform scale-110"
-          src={randomMap.splash}
-          alt="background image"
-          layout="fill"
-          priority={true}
-        />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ ease: "easeOut", duration: 1 }}
+        >
+          <Image
+            className="absolute w-full h-full filter z-0 blur-sm transform scale-110"
+            src={randomMap.splash}
+            alt="background image"
+            layout="fill"
+            priority={true}
+          />
+        </motion.div>
 
         <div className="absolute top-2 flex flex-col md:flex-row md:gap-8 w-full md:justify-between px-2 md:px-9">
           <h1 className="text-white font-anton text-xl md:text-2xl">
