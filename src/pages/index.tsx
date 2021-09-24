@@ -83,22 +83,22 @@ export default function Home({ agents, randomMap }: HomeProps) {
         <div className="absolute top-2 flex flex-col md:flex-row md:gap-8 w-full md:justify-between px-2 md:px-9">
           <motion.h1
             className="text-white font-anton text-xl md:text-2xl"
-            key={bestScore}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ ease: "easeOut", duration: 1 }}
-          >
-            BEST SCORE: {bestScore}
-          </motion.h1>
-
-          <motion.h1
-            className="text-white font-anton text-xl md:text-2xl"
             key={score}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ ease: "easeOut", duration: 1 }}
           >
             SCORE: {score}
+          </motion.h1>
+          
+          <motion.h1
+            className="text-white font-anton text-xl md:text-2xl"
+            key={bestScore}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ ease: "easeOut", duration: 1 }}
+          >
+            BEST SCORE: {bestScore}
           </motion.h1>
         </div>
 
