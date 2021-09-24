@@ -26,12 +26,14 @@ module.exports = {
       yellow: colors.amber,
       green: colors.emerald,
     },
-    extend: {
-    },
+    extend: {},
   },
   variants: {
     extend: {
-      brightness: ['hover', 'focus'],
+      brightness: ["hover", "focus"],
+      opacity: ["disabled"],
+      cursor: ["disabled"],
+      backgroundColor: ["disabled"],
     },
   },
   plugins: [],

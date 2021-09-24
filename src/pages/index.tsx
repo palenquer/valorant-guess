@@ -123,11 +123,7 @@ export default function Home({ agents, randomMap }: HomeProps) {
                   )}
                 </motion.div>
                 <button
-                  className={`${
-                    selectedAgent == ""
-                      ? "cursor-not-allowed"
-                      : "bg-green-400 hover:bg-green-300 transition"
-                  }" py-3 px-12 text-2xl font-black text-gray-200 border border-gray-200"`}
+                  className="bg-green-400 hover:bg-green-300 transition disabled:cursor-not-allowed disabled:bg-transparent py-3 px-12 text-2xl font-black text-gray-200 border border-gray-200"
                   onClick={CheckAgent}
                   type="button"
                   disabled={selectedAgent == ""}
@@ -135,7 +131,12 @@ export default function Home({ agents, randomMap }: HomeProps) {
                   LOCK IN
                 </button>
 
-                <div className="grid md:grid-rows-2 grid-rows-4 grid-flow-col gap-1">
+                <motion.div
+                  className="grid md:grid-rows-2 grid-rows-4 grid-flow-col gap-1"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ ease: "easeOut", duration: 1 }}
+                >
                   {agents.map((agent: Agent) => {
                     return (
                       <button
@@ -156,11 +157,14 @@ export default function Home({ agents, randomMap }: HomeProps) {
                       </button>
                     );
                   })}
-                </div>
+                </motion.div>
               </div>
             </div>
           ) : (
-            <button
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ ease: "easeOut", duration: 1 }}
               className={`${
                 startGame
                   ? "hidden"
@@ -172,7 +176,7 @@ export default function Home({ agents, randomMap }: HomeProps) {
               }}
             >
               START
-            </button>
+            </motion.button>
           )}
         </section>
       </main>
