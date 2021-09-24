@@ -81,13 +81,25 @@ export default function Home({ agents, randomMap }: HomeProps) {
         />
 
         <div className="absolute top-2 flex flex-col md:flex-row md:gap-8 w-full md:justify-between px-2 md:px-9">
-          <h1 className="text-white font-anton text-xl md:text-2xl">
+          <motion.h1
+            className="text-white font-anton text-xl md:text-2xl"
+            key={bestScore}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ ease: "easeOut", duration: 1 }}
+          >
             BEST SCORE: {bestScore}
-          </h1>
+          </motion.h1>
 
-          <h1 className="text-white font-anton text-xl md:text-2xl">
+          <motion.h1
+            className="text-white font-anton text-xl md:text-2xl"
+            key={score}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ ease: "easeOut", duration: 1 }}
+          >
             SCORE: {score}
-          </h1>
+          </motion.h1>
         </div>
 
         <section className="z-10 w-full h-full flex justify-center items-center">
@@ -110,11 +122,18 @@ export default function Home({ agents, randomMap }: HomeProps) {
               </motion.div>
 
               <div className="flex flex-col items-center justify-center gap-4 md:gap-8">
-                {selectedAgent != "" ? (
-                  <h1 className="text-white font-bold">{selectedAgent}</h1>
-                ) : (
-                  <h1 className="text-white font-bold">Select an agent</h1>
-                )}
+                <motion.div
+                  key={selectedAgent}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ ease: "easeOut", duration: 1 }}
+                >
+                  {selectedAgent != "" ? (
+                    <h1 className="text-white font-bold">{selectedAgent}</h1>
+                  ) : (
+                    <h1 className="text-white font-bold">Select an agent</h1>
+                  )}
+                </motion.div>
                 <button
                   className={`${
                     selectedAgent == ""
@@ -173,7 +192,7 @@ export default function Home({ agents, randomMap }: HomeProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetStaticProps = async () => {
   const data = await fetch("https://valorant-api.com/v1/agents");
   const maps = await fetch("https://valorant-api.com/v1/maps");
   const response = await data.json();
