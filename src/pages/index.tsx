@@ -192,7 +192,7 @@ export default function Home({ agents, randomMap }: HomeProps) {
   );
 }
 
-export const getServerSideProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const data = await fetch("https://valorant-api.com/v1/agents");
   const maps = await fetch("https://valorant-api.com/v1/maps");
   const response = await data.json();
