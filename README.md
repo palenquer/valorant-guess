@@ -4,7 +4,7 @@
   <p align="center">
     <br />
      
-   <img src="https://prnt.sc/1ti20te">
+   <img src="https://user-images.githubusercontent.com/72106284/134738207-ee37f740-a8fe-41ff-87de-dcee66764434.png" alt="Project Image">
     <a href="https://valorant-guess.vercel.app">DEMO</a>
   </p>
   <p align="center">Jogo de guess com o tema Valorant</p>
