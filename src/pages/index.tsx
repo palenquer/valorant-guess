@@ -139,7 +139,7 @@ export default function Home({ agents, randomMap }: HomeProps) {
                 </button>
 
                 <motion.div
-                  className="grid md:grid-rows-2 grid-rows-4 grid-cols-8 gap-1"
+                  className="grid md:grid-rows-2 grid-rows-4 grid-cols-4 md:grid-cols-8 gap-1"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ ease: "easeOut", duration: 1 }}
