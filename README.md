@@ -36,7 +36,7 @@ Este projeto é um jogo de Guess(adivinhação) onde o usuário terá a chance d
    ```
 3. Rode o projeto no seu terminal
     ```sh
-   npm start // yarn start
+   npm dev // yarn dev
    ```
 4. Abra o localhost indicado no seu navegador
 
